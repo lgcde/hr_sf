@@ -1,5 +1,9 @@
 # hr_SF
 报表样式参考网址：http://www.winton.com.tw/products/nhrs/nhrs-b01.html
+## 2016-2-26 讨论摘要
+1. 将xls里的时间减去8小时，再导入。即：以utc时间导入。
+2. 导进去的attendance的action都设置为action。开一个系统定时任务，再去处理这些attendance的sign in和sign out。
+
 ## 2016-2-25 讨论摘要
 1. 要实现的报表：
   * 刷卡资料一览表
