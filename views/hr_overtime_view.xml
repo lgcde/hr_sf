@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="overtime_view_form" model="ir.ui.view">
+            <field name="name">overtime.view.form</field>
+            <field name="model">hr_sf.overtime</field>
+            <field name="arch" type="xml">
+                <form string="">
+                    <sheet>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="employee_ids"/>
+                            <field name="state"/>
+                            <field name="duration"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="overtime_view_tree" model="ir.ui.view">
+            <field name="name">overtime.view.tree</field>
+            <field name="model">hr_sf.overtime</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="employee_ids"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="overtime_action_list" model="ir.actions.act_window">
+            <field name="name">Overtimes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">hr_sf.overtime</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    <!-- Add Text Here -->
+                </p>
+                <p>
+                    <!-- More details about what a user can do with this object will be OK -->
+                </p>
+            </field>
+        </record>
+
+        <!-- This Menu Item Must have a parent -->
+        <menuitem id="overtimes_menu_cate" name="Overtimes" parent="hr.menu_hr_root" sequence=""/>
+
+        <!-- This Menu Item must have a parent and an action -->
+        <menuitem id="overtimes_menu" name="Overtimes" parent="overtimes_menu_cate" action="overtime_action_list"
+                  sequence=""/>
+    </data>
+</openerp>
