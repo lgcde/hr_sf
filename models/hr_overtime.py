@@ -16,7 +16,7 @@ class Overtime(models.Model):
     @api.multi
     def _compute_duration(self):
         for overtime in self:
-            if all(dt_date_from,dt_date_to):
+            if all((overtime.date_from, overtime.date_to)):
                 dt_date_from = Datetime.from_string(overtime.date_from)
                 dt_date_to = Datetime.from_string(overtime.date_to)
                 overtime.duration = (dt_date_to - dt_date_from).seconds / 3600.0
