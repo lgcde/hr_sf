@@ -43,8 +43,13 @@ class HR_SF_Controller(Controller):
                     base64_file = base64.standard_b64encode(upload_file_content)
                     upload_log = UploadLog.create({"upload_file": base64_file, "file_name": upload_file.filename,
                                                    "date": Datetime.now(), "source": source})
+                upload_log_id = upload_log.id
 
-                import_count = 0
+                employees = Employee.search([])
+                employee_ids = dict(employees.mapped(lambda r: (r.internal_code, r.id)))
+
+                line_number = 0
+                values = []
                 for row in rows:
                     code, name, year, month, day, hour, minute = row[0:7]
                     location = str(int(row[7]))
@@ -56,17 +61,22 @@ class HR_SF_Controller(Controller):
 
                     exist_count = Attendance.search_count([("code", "=", code), ("name", "=", odoo_dt_str)])
                     if exist_count <= 0:
-                        employee = Employee.search([("internal_code", "=", code)])
-                        if employee:
-                            Attendance.create({"employee_id": employee.id, "name": odoo_dt_str, "location": location,
-                                               "action": "action", "upload_log_id": upload_log.id})
-                            import_count += 1
+                        emp_id = employee_ids.get(code, None)
+                        if emp_id is not None:
+                            # Attendance.create({"employee_id": emp_id, "name": odoo_dt_str, "location": location,
+                            #                    "action": "action", "upload_log_id": upload_log_id})
+                            values.append({"employee_id": emp_id, "name": odoo_dt_str, "location": location,
+                                           "action": "action", "upload_log_id": upload_log_id})
                         else:
-                            request.env.cr.rollback()
-                            raise Exception("employee with code:%s not found" % code)
+                            raise Exception("error in line:%d,employee with code:%s not found" % (line_number, code))
+                    line_number += 1
 
-                return request.render("hr_sf.attendance_upload_finish", {"import_count": import_count})
+                for value in values:
+                    Attendance.create(value)
+
+                return request.render("hr_sf.attendance_upload_finish", {"import_count": len(values)})
             except Exception, e:
+                request.env.cr.rollback()
                 return e.message or e.value
 
     @route("/hr_sf/report/per_location", auth="public", methods=["GET"])
