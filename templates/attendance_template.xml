@@ -215,107 +215,260 @@
 
         <template id="attendance_detail_content">
             <div class="header">
-    <div class='header'>
+                <div class='header'>
 
-    </div>
-    <div class='page'>
-        <h2><span/>~<span/>出勤明細表
-        </h2>
-        <div class='row'>
-            <div class='col-xs-3'>標準出勤時間：<span/>~
-                <span/>
-            </div>
-            <div class='col-xs-3'>加班來源：
-                <span>員工出勤 加班單</span>
-            </div>
+                </div>
+                <div class='page'>
+                    <h2><span/>~<span/>出勤明細表
+                    </h2>
+                    <div class='row'>
+                        <div class='col-xs-3'>標準出勤時間：<span/>~
+                            <span/>
+                        </div>
+                        <div class='col-xs-3'>加班來源：
+                            <span>員工出勤 加班單</span>
+                        </div>
 
-            <div class='col-xs-3'>假日出勤：
-                <span>含假日 僅假日</span>
-            </div>
-            <div class='col-xs-2 pull-right'>列印時間：
-                <span t-esc="datetime.date.today()"/>
-            </div>
-        </div>
-        <div class='row'>
-            <div class='col-xs-3'>員工區間：<span/>~
-                <span/>
-            </div>
-            <div class='col-xs-3'>請假來源：
-                <span>員工出勤 請假單</span>
-            </div>
-            <div class='col-xs-3'>假別名稱：
-                <span>中文 外文</span>
-            </div>
-            <div class='col-xs-2 pull-right'>
-                <ul class="list-inline">
-                    <li>頁次：</li>
-                    <li>
-                        <span class="page"/>
-                    </li>
-                    <li>/</li>
-                    <li>
-                        <span class="topage"/>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                        <div class='col-xs-3'>假日出勤：
+                            <span>含假日 僅假日</span>
+                        </div>
+                        <div class='col-xs-2 pull-right'>列印時間：
+                            <span t-esc="datetime.date.today()"/>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-xs-3'>員工區間：<span/>~
+                            <span/>
+                        </div>
+                        <div class='col-xs-3'>請假來源：
+                            <span>員工出勤 請假單</span>
+                        </div>
+                        <div class='col-xs-3'>假別名稱：
+                            <span>中文 外文</span>
+                        </div>
+                        <div class='col-xs-2 pull-right'>
+                            <ul class="list-inline">
+                                <li>頁次：</li>
+                                <li>
+                                    <span class="page"/>
+                                </li>
+                                <li>/</li>
+                                <li>
+                                    <span class="topage"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
-        <table class="table table-bordered">
+                    <table class="table table-bordered">
 
-            <tr>
-                <td rowspan='2'>部門代號</td>
-                <td rowspan='2'>部門名稱</td>
-                <td rowspan='2'>員工代號</td>
-                <td rowspan='2'>員工姓名</td>
-                <td rowspan='2'>出勤日期</td>
+                        <tr>
+                            <td rowspan='2'>部門代號</td>
+                            <td rowspan='2'>部門名稱</td>
+                            <td rowspan='2'>員工代號</td>
+                            <td rowspan='2'>員工姓名</td>
+                            <td rowspan='2'>出勤日期</td>
 
-                <td colspan='3'>實際出勤時間</td>
-                <td colspan='3'>考勤狀況(分)/(次)</td>
-                <td rowspan='2'>加班時數</td>
-                <td rowspan='2'>請假時數</td>
-                <td rowspan='2'>备注</td>
-                <!--<td rowspan='2'>開始時間</td>-->
-                <!--<td rowspan='2'>結束時間</td>-->
+                            <td colspan='3'>實際出勤時間</td>
+                            <td colspan='3'>考勤狀況(分)/(次)</td>
+                            <td rowspan='2'>加班時數</td>
+                            <td rowspan='2'>請假時數</td>
+                            <td rowspan='2'>备注</td>
+                            <!--<td rowspan='2'>開始時間</td>-->
+                            <!--<td rowspan='2'>結束時間</td>-->
 
-            </tr>
-            <tr>
+                        </tr>
+                        <tr>
 
-                <td>上班</td>
-                <td>下班</td>
-                <td>工時</td>
-                <td>遲到</td>
-                <td>早退</td>
-                <td>忘卡</td>
-            </tr>
+                            <td>上班</td>
+                            <td>下班</td>
+                            <td>工時</td>
+                            <td>遲到</td>
+                            <td>早退</td>
+                            <td>忘卡</td>
+                        </tr>
 
-            <t t-foreach="emp_attendances" t-as="emp">
-                <tr>
-                    <td>1</td>
-                    <td><t t-esc="emp['emp_dep']"/></td>
-                    <td><t t-esc="emp['emp_code']"/></td>
-                    <td><t t-esc="emp['name']"/></td>
-                    <td><t t-esc="emp['date']"/></td>
-                    <td><t t-esc="emp['start_work_time']"/></td>
-                    <td><t t-esc="emp['end_work_time']"/></td>
-                    <td>8</td>
-                    <td><t t-esc="emp['late_minutes'] or None"/></td>
-                    <td><t t-esc="emp['early_minutes'] or None"/></td>
-                    <td><t t-esc="emp['forget_card'] or None"/></td>
-                    <td><t t-esc="emp['overtime_hours'] or None"/></td>
-                    <td><t t-esc="emp['holiday_total'] or None"/></td>
-                    <td><t t-esc="emp['summary'] or None"/></td>
-                    <!--<td>15</td>-->
-                </tr>
-            </t>
-        </table>
-    </div>
-</div>
+                        <t t-foreach="emp_attendances" t-as="emp">
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <t t-esc="emp['emp_dep']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['emp_code']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['name']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['date']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['start_work_time']"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['end_work_time']"/>
+                                </td>
+                                <td>8</td>
+                                <td>
+                                    <t t-esc="emp['late_minutes'] or None"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['early_minutes'] or None"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['forget_card'] or None"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['overtime_hours'] or None"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['holiday_total'] or None"/>
+                                </td>
+                                <td>
+                                    <t t-esc="emp['summary'] or None"/>
+                                </td>
+                                <!--<td>15</td>-->
+                            </tr>
+                        </t>
+                    </table>
+                </div>
+            </div>
         </template>
 
         <template id="attendance_detail_webpage">
             <t>
                 <t t-call="hr_sf.report_web_page_layout">
                     <t t-call="hr_sf.attendance_detail_content"></t>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_attendance_detail">
+            <t t-call="report.html_container">
+                <t t-call="report.external_layout">
+                    <div class="page">
+                        <div class="header">
+                            <div class='header'>
+
+                            </div>
+                            <div class='page'>
+                                <h2><span/><t t-esc="'(%s - %s)' %(date_from,date_to)"/><span/>出勤明細表
+                                </h2>
+                                <div class='row'>
+                                    <div class='col-xs-3'>標準出勤時間：<span/>~
+                                        <span/>
+                                    </div>
+                                    <div class='col-xs-3'>加班來源：
+                                        <span>員工出勤 加班單</span>
+                                    </div>
+
+                                    <div class='col-xs-3'>假日出勤：
+                                        <span>含假日 僅假日</span>
+                                    </div>
+                                    <div class='col-xs-2 pull-right'>列印時間：
+                                        <span t-esc="datetime.date.today()"/>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col-xs-3'>員工區間：<span/>~
+                                        <span/>
+                                    </div>
+                                    <div class='col-xs-3'>請假來源：
+                                        <span>員工出勤 請假單</span>
+                                    </div>
+                                    <div class='col-xs-3'>假別名稱：
+                                        <span>中文 外文</span>
+                                    </div>
+                                    <div class='col-xs-2 pull-right'>
+                                        <ul class="list-inline">
+                                            <li>頁次：</li>
+                                            <li>
+                                                <span class="page"/>
+                                            </li>
+                                            <li>/</li>
+                                            <li>
+                                                <span class="topage"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered">
+
+                                    <tr>
+                                        <td rowspan='2'>部門代號</td>
+                                        <td rowspan='2'>部門名稱</td>
+                                        <td rowspan='2'>員工代號</td>
+                                        <td rowspan='2'>員工姓名</td>
+                                        <td rowspan='2'>出勤日期</td>
+
+                                        <td colspan='3'>實際出勤時間</td>
+                                        <td colspan='3'>考勤狀況(分)/(次)</td>
+                                        <td rowspan='2'>加班時數</td>
+                                        <td rowspan='2'>請假時數</td>
+                                        <td rowspan='2'>备注</td>
+                                        <!--<td rowspan='2'>開始時間</td>-->
+                                        <!--<td rowspan='2'>結束時間</td>-->
+
+                                    </tr>
+                                    <tr>
+
+                                        <td>上班</td>
+                                        <td>下班</td>
+                                        <td>工時</td>
+                                        <td>遲到</td>
+                                        <td>早退</td>
+                                        <td>忘卡</td>
+                                    </tr>
+
+                                    <t t-foreach="emp_attendances" t-as="emp">
+                                        <tr>
+                                            <td>1</td>
+                                            <td>
+                                                <t t-esc="emp['emp_dep']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['emp_code']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['name']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['date']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['start_work_time']"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['end_work_time']"/>
+                                            </td>
+                                            <td>8</td>
+                                            <td>
+                                                <t t-esc="emp['late_minutes'] or None"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['early_minutes'] or None"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['forget_card'] or None"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['overtime_hours'] or None"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['holiday_total'] or None"/>
+                                            </td>
+                                            <td>
+                                                <t t-esc="emp['summary'] or None"/>
+                                            </td>
+                                            <!--<td>15</td>-->
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </t>
             </t>
         </template>

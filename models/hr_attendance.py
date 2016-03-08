@@ -1,10 +1,11 @@
 # _*_ coding: utf-8 _*_
 import datetime
 from openerp import models, fields, api
-from openerp.fields import Datetime
+from openerp.fields import Date
 from openerp.tools.misc import DEFAULT_SERVER_TIME_FORMAT
 
 from ..tools.TimeZoneHelper import UTC_Datetime_To_TW_TZ
+from ..tools.TimeZoneHelper import UTC_String_From_TW_TZ
 
 
 class Attendance(models.Model):
@@ -81,23 +82,39 @@ class Attendance(models.Model):
         (_altern_si_so, 'Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)', ['action'])]
 
     @api.multi
-    def adjust(self):
-        date = fields.Date.today()
-        domain = [("name", "=like", "%s%%" % date)]
-        records = self.search(domain)
-        if not records:
+    def adjust(self, date_from=None, date_to=None):
+        if not any((date_from, date_to)):
+            dt_date_from = fields.Date.from_string(fields.Date.today())
+            dt_date_to = fields.Date.from_string(fields.Date.today())
+        elif all((date_from, date_to)):
+            dt_date_from = fields.Date.from_string(date_from)
+            dt_date_to = fields.Date.from_string(date_to)
+        else:
             return True
-        employees = records.mapped("employee_id")
-        for emp in employees:
-            emp_records = records.filtered(lambda r: r.employee_id == emp)
-            emp_records.write({"action": "action"})
-            emp_records = emp_records.sorted(key=lambda r: r.name)
-            if emp_records:
-                emp_records[0].action = "sign_in"
-                if len(emp_records) > 1:
-                    emp_records[-1].action = "sign_out"
 
-        print "yes cron is ok"
+        dt_date = dt_date_from
+        while dt_date <= dt_date_to:
+            domain = [("name", ">=",
+                       fields.Datetime.to_string(
+                               datetime.datetime(dt_date.year, dt_date.month, dt_date.day) + datetime.timedelta(
+                                       hours=- 8, minutes=0, seconds=0))),
+                      ("name", "<=",
+                       fields.Datetime.to_string(
+                               datetime.datetime(dt_date.year, dt_date.month, dt_date.day) + datetime.timedelta(
+                                       hours=23 - 8, minutes=59, seconds=59)))]
+            records = self.search(domain)
+            if records:
+                employees = records.mapped("employee_id")
+                for emp in employees:
+                    emp_records = records.filtered(lambda r: r.employee_id == emp)
+                    if emp_records:
+                        emp_records.write({"action": "action"})
+                        emp_records = emp_records.sorted(key=lambda r: r.name)
+                        emp_records[0].action = "sign_in"
+                        if len(emp_records) > 1:
+                            emp_records[-1].action = "sign_out"
+            dt_date += datetime.timedelta(days=1)
+        return True
 
     @api.model
     def create(self, vals):

@@ -51,11 +51,10 @@
         </record>
 
         <!-- This Menu Item Must have a parent -->
-        <menuitem id="attendance_report_cate" name="Reports" parent="hr_attendance.menu_hr_attendance" sequence=""/>
+        <menuitem id="attendance_report_cate" name="Reports" parent="hr_attendance.menu_hr_attendance" sequence="110"/>
 
         <!-- This Menu Item must have a parent and an action -->
         <menuitem id="attendance_report_per_location" name="Attendance Daily" parent="attendance_report_cate" action="url_action_attendance_per_location" sequence="1"/>
-        <menuitem id="attendance_report_detail" name="Attendance Detail" parent="attendance_report_cate" action="url_action_attendance_detail" sequence="2"/>
 
     </data>
 </openerp>

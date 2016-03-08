@@ -15,6 +15,9 @@
              "views/hr_holidays_view.xml",
              "views/hr_overtime_view.xml",
              "data/ir_cron_data.xml",
-             "data/ir_config_parameter_data.xml"],
+             "data/ir_config_parameter_data.xml",
+             "wizards/adjust_attendance_wizard_view.xml",
+             "wizards/report_attendance_detail_wizard_view.xml",
+             "report/report.xml"],
     'demo': [],
 }

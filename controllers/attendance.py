@@ -15,6 +15,7 @@ from openerp.tools import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 from ..tools import TimeZoneHelper_TW
+from ..tools.TimeZoneHelper import UTC_Datetime_To_TW_TZ
 
 
 class HR_SF_Controller(Controller):
@@ -113,9 +114,8 @@ class HR_SF_Controller(Controller):
             if records:
                 latest_rec = records[-1]
                 attendance["state"] = "打卡"
-                request.env._context = request.env.context
 
-                dt = Datetime.context_timestamp(TimeZoneHelper_TW, Datetime.from_string(latest_rec.name))
+                dt = UTC_Datetime_To_TW_TZ(latest_rec.name)
                 date_part = dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
                 time_part = dt.strftime(DEFAULT_SERVER_TIME_FORMAT)
                 attendance["date"] = date_part
@@ -144,6 +144,8 @@ class HR_SF_Controller(Controller):
 
     @route("/hr_sf/report/attendance_detail", auth="public", methods=["GET"])
     def attendance_detail(self, date_from=None, date_to=None):
+        CAL_START_TIME = datetime.datetime.now()
+        print "开始计算出勤明细表:", CAL_START_TIME
         if any((date_from, date_to)) and not all((date_from, date_to)):
             return "miss date_from or date_to"
 
@@ -163,7 +165,7 @@ class HR_SF_Controller(Controller):
         all_employees = Employee.search([])
         for emp in all_employees:
             dt = date_from
-            while dt < date_to:
+            while dt <= date_to:
                 dt_str = Date.to_string(dt)
 
                 overtime_hours = emp.get_overtime_hours_on(date_from=dt_str, date_to=dt_str)
@@ -178,11 +180,12 @@ class HR_SF_Controller(Controller):
                 line['date'] = dt.strftime(DEFAULT_SERVER_DATE_FORMAT + " %A")  # Date.to_string(dt)
 
                 start_work_time = emp.get_start_work_time_on(dt_str)
-                line["start_work_time"] = start_work_time.strftime(
-                        DEFAULT_SERVER_TIME_FORMAT) if start_work_time else None
+                line["start_work_time"] = start_work_time.strftime(DEFAULT_SERVER_TIME_FORMAT) \
+                    if start_work_time else None
 
                 end_work_time = emp.get_end_work_time_on(dt_str)
-                line["end_work_time"] = end_work_time.strftime(DEFAULT_SERVER_TIME_FORMAT) if end_work_time else None
+                line["end_work_time"] = end_work_time.strftime(DEFAULT_SERVER_TIME_FORMAT) \
+                    if end_work_time else None
 
                 late_minutes = emp.get_late_minutes_on(dt_str)
                 line["late_minutes"] = round(late_minutes, 2) if late_minutes else None
@@ -201,4 +204,7 @@ class HR_SF_Controller(Controller):
                 dt += datetime.timedelta(days=1)
 
         values["emp_attendances"] = emp_attendances_values
+        CAL_END_TIME = datetime.datetime.now()
+        print "结束时间:", CAL_END_TIME
+        print "耗时:", CAL_END_TIME - CAL_START_TIME
         return request.render("hr_sf.attendance_detail_webpage", values)

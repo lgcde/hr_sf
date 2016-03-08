@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<openerp>
+    <data>
+        <report id="action_report_attendance_detail"
+                model="hr.attendance"
+                string="Attendance Detail"
+                report_type="qweb-pdf"
+                name="hr_sf.report_attendance_detail"
+                file="hr_sf.report_attendance_detail"
+                menu="False"/>
+    </data>
+</openerp>
