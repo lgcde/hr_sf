@@ -7,9 +7,19 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <h1>出勤明細表向导</h1>
                         <group>
                             <field name="date_from"/>
                             <field name="date_to"/>
+                            <field name="filter_by_employee"/>
+                            <field name="employee_ids" attrs="{'invisible':[('filter_by_employee','=',False)]}">
+                                <tree>
+                                    <field name="internal_code"/>
+                                    <field name="name"/>
+                                    <field name="department_id"/>
+                                    <field name="job_id"/>
+                                </tree>
+                            </field>
                         </group>
                     </sheet>
                     <footer>

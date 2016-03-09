@@ -10,7 +10,7 @@
             <field name="active">True</field>
             <field name="model">hr.attendance</field>
             <field name="function">adjust</field>
-            <field name="args">()</field>
+            <field name="args">(None,None)</field>
         </record>
     </data>
 </openerp>

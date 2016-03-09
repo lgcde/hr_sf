@@ -5,8 +5,8 @@ from openerp import models, fields, api
 class AdjustAttendanceWizard(models.TransientModel):
     _name = "hr_sf.adjust_attendance_wizard"
 
-    date_from = fields.Date()
-    date_to = fields.Date()
+    date_from = fields.Date(default=lambda self: fields.date.today())
+    date_to = fields.Date(default=lambda self: fields.date.today())
 
     @api.multi
     def action_OK(self):

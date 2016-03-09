@@ -11,14 +11,7 @@ from ..tools.TimeZoneHelper import UTC_String_From_TW_TZ
 class Attendance(models.Model):
     _inherit = "hr.attendance"
 
-    location = fields.Selection((("1", "1"),
-                                 ("2", "2"),
-                                 ("3", "3"),
-                                 ("4", "4"),
-                                 ("5", "5"),
-                                 ("6", "6"),
-                                 ("7", "7"),
-                                 ("8", "8")), required=True)
+    location = fields.Char(required=True)
     code = fields.Char(related="employee_id.internal_code", readonly=True)
 
     upload_log_id = fields.Many2one("hr_sf.attendance_upload_Log", string="Upload log")

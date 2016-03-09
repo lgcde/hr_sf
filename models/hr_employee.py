@@ -23,27 +23,18 @@ class Employee(models.Model):
 
     holidays_ids = fields.One2many("hr.holidays", "employee_id")
 
-    @api.multi
-    def get_report_attendance_detail_data(self, start_date, end_date):
-        HRAttendance = self.env["hr.attendance"].sodu()
-
-        ret = []
-        for emp in self:
-            HRAttendance.search([("employee_id", "=", emp.id), ])
-        pass
-
-    @api.multi
-    def get_attendance(self, date=None, location=None):
-        self.ensure_one()
-        HRAttendance = self.env["hr.attendance"].sudo()
-        domain = []
-        if date:
-            domain.append(("name", "=like", "%s%%" % date))
-        if location:
-            domain.append(("location", "=", location))
-
-        records = HRAttendance.search(domain)
-        return records
+    # @api.multi
+    # def get_attendance(self, date=None, location=None):
+    #     self.ensure_one()
+    #     HRAttendance = self.env["hr.attendance"].sudo()
+    #     domain = []
+    #     if date:
+    #         domain.append(("name", "=like", "%s%%" % date))
+    #     if location:
+    #         domain.append(("location", "=", location))
+    #
+    #     records = HRAttendance.search(domain)
+    #     return records
 
     @api.multi
     def get_holiday_on(self, date=None):
@@ -111,7 +102,7 @@ class Employee(models.Model):
         return UTC_Datetime_To_TW_TZ(attendance.name) if attendance else None
 
     @api.multi
-    def get_work_duration_on(self,date=None):
+    def get_work_duration_on(self, date=None):
         self.ensure_one()
         if not date:
             return None
@@ -119,7 +110,41 @@ class Employee(models.Model):
         sign_in_attendance = self.get_sign_in_attendance(date)
         sign_out_attendance = self.get_sign_out_attendance(date)
         if sign_in_attendance and sign_out_attendance:
-            pass
+            dt_the_day_morning_start_work_time = datetime.datetime.strptime(
+                    "%s %s" % (date, sign_in_attendance.morning_start_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_morning_end_work_time = datetime.datetime.strptime(
+                    "%s %s" % (date, sign_in_attendance.morning_end_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_afternoon_start_work_time = datetime.datetime.strptime(
+                    "%s %s" % (date, sign_out_attendance.afternoon_start_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_afternoon_end_work_time = datetime.datetime.strptime(
+                    "%s %s" % (date, sign_out_attendance.afternoon_end_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+
+            dt_sign_in_time = Datetime.from_string(sign_in_attendance.name) + datetime.timedelta(hours=8)
+            dt_sign_out_time = Datetime.from_string(sign_out_attendance.name) + datetime.timedelta(hours=8)
+
+            # morning first
+            dt_cal_start = max(dt_the_day_morning_start_work_time, dt_sign_in_time)
+            dt_cal_start = min(dt_cal_start, dt_the_day_morning_end_work_time)
+
+            # dt_cal_end = min(dt_the_day_morning_end_work_time, dt_sign_out_time)
+            # dt_cal_end = max(dt_cal_end, dt_the_day_morning_start_work_time)
+            dt_cal_end = dt_the_day_morning_end_work_time
+            work_duration = datetime.timedelta()
+            if dt_cal_end > dt_cal_start:
+                work_duration += dt_cal_end - dt_cal_start
+
+            # then deal with afternoon
+            # dt_cal_start = max(dt_the_day_afternoon_start_work_time, dt_sign_out_time)
+            # dt_cal_start = min(dt_cal_start, dt_the_day_afternoon_end_work_time)
+            dt_cal_start = dt_the_day_afternoon_start_work_time
+
+            dt_cal_end = min(dt_the_day_afternoon_end_work_time, dt_sign_out_time)
+            dt_cal_end = max(dt_cal_end, dt_the_day_afternoon_start_work_time)
+
+            if dt_cal_end > dt_cal_start:
+                work_duration += dt_cal_end - dt_cal_start
+
+            return work_duration.seconds / 3600.0
 
     @api.multi
     def get_sign_in_attendance(self, date):
@@ -210,7 +235,7 @@ class Employee(models.Model):
                                          ("name", ">=", query_date_start),
                                          ("name", "<=", query_date_end),
                                          ("forget_card", "=", True)])
-        return 1 if attendances else 0
+        return len(attendances) if attendances else 0
 
     @api.multi
     def get_overtime_hours_on(self, date_from=None, date_to=None):

@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 import datetime
 import string
-from openerp import models, fields, api
+from openerp import models, api
 from openerp.fields import Date
 from openerp.tools.misc import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools.misc import DEFAULT_SERVER_DATE_FORMAT
@@ -15,13 +15,16 @@ class ReportAttendanceDetail(models.AbstractModel):
         date_from = data.get("date_from", None)
         date_to = data.get("date_to", None)
 
+        filter_by_employee = data.get("filter_by_employee", None)
+        employee_ids = data.get("employee_ids", None)
+
         docargs = dict()
-        docargs["emp_attendances"] = self.get_attendance_detail(date_from, date_to)
+        docargs["emp_attendances"] = self.get_attendance_detail(date_from, date_to, filter_by_employee, employee_ids)
         docargs["date_from"] = date_from
         docargs["date_to"] = date_to
         return self.env['report'].render('hr_sf.report_attendance_detail', values=docargs)
 
-    def get_attendance_detail(self, date_from=None, date_to=None):
+    def get_attendance_detail(self, date_from=None, date_to=None, filter_by_employee=None, employee_ids=None):
         CAL_START_TIME = datetime.datetime.now()
         print "开始计算出勤明细表:", CAL_START_TIME
         if any((date_from, date_to)) and not all((date_from, date_to)):
@@ -37,10 +40,13 @@ class ReportAttendanceDetail(models.AbstractModel):
 
         Employee = self.env["hr.employee"].sudo()
 
-        values = dict()
         emp_attendances_values = []
 
-        all_employees = Employee.search([])
+        employee_search_domain = []
+        if filter_by_employee and employee_ids:
+            employee_search_domain.append(("id", "in", employee_ids))
+        all_employees = Employee.search(employee_search_domain)
+
         for emp in all_employees:
             dt = date_from
             while dt <= date_to:
@@ -71,6 +77,9 @@ class ReportAttendanceDetail(models.AbstractModel):
                 early_minutes = emp.get_early_minutes_on(dt_str)
                 line["early_minutes"] = round(early_minutes, 2) if early_minutes else None
 
+                work_duration = emp.get_work_duration_on(dt_str)
+                line["work_duration"] = round(work_duration, 2) if work_duration else None
+
                 line["overtime_hours"] = round(overtime_hours, 2)
 
                 leaves = emp.get_holiday_on(dt_str)
@@ -81,7 +90,6 @@ class ReportAttendanceDetail(models.AbstractModel):
                 emp_attendances_values.append(line)
                 dt += datetime.timedelta(days=1)
 
-        # values["emp_attendances"] = emp_attendances_values
         CAL_END_TIME = datetime.datetime.now()
         print "结束时间:", CAL_END_TIME
         print "耗时:", CAL_END_TIME - CAL_START_TIME
