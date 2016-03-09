@@ -7,13 +7,14 @@
             <field name="arch" type="xml">
                 <form string="">
                     <sheet>
+                        <h1>调整原始考勤数据</h1>
                         <group>
                             <field name="date_from"/>
                             <field name="date_to"/>
                         </group>
                     </sheet>
                     <footer>
-                        <button type="object" name="action_OK" string="OK" class="oe_highlight"/>
+                        <button type="object" name="action_OK" string="Start" class="oe_highlight"/>
                         <button special="cancel" string="Cancel"/>
                     </footer>
                 </form>

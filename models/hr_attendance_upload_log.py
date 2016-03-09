@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-from openerp import models, fields, api
+from openerp import models, fields
 
 
 class AttendanceUploadLog(models.Model):

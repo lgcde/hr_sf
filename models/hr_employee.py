@@ -18,8 +18,8 @@ class Employee(models.Model):
     _inherit = "hr.employee"
 
     card_code = fields.Char()
-    internal_code = fields.Char()
-    responsibility = fields.Boolean()
+    internal_code = fields.Char(help="考勤卡卡号。")
+    responsibility = fields.Boolean(help="用于标识这个员工是不是责任制。")
 
     holidays_ids = fields.One2many("hr.holidays", "employee_id")
 

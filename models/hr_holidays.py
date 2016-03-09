@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 from openerp import models, fields, api, _
 from openerp.fields import Datetime
-
+from openerp.exceptions import Warning
 
 class Holiday(models.Model):
     _inherit = "hr.holidays"
@@ -37,3 +37,5 @@ class Holiday(models.Model):
         vals["afternoon_start_work_time"] = afternoon_start_work_time
         vals["afternoon_end_work_time"] = afternoon_end_work_time
         return super(Holiday, self).create(vals)
+
+

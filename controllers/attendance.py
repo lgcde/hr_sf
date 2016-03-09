@@ -2,9 +2,7 @@
 import csv
 import base64
 import datetime
-import itertools
-from operator import attrgetter
-import string
+
 from openerp.fields import Datetime
 from openerp.fields import Date
 from openerp.http import route
@@ -14,7 +12,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
-from ..tools import TimeZoneHelper_TW
 from ..tools.TimeZoneHelper import UTC_Datetime_To_TW_TZ
 
 
