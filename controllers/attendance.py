@@ -64,7 +64,8 @@ class HR_SF_Controller(Controller):
                             # Attendance.create({"employee_id": emp_id, "name": odoo_dt_str, "location": location,
                             #                    "action": "action", "upload_log_id": upload_log_id})
                             values.append({"employee_id": emp_id, "name": odoo_dt_str, "location": location,
-                                           "action": "action", "upload_log_id": upload_log_id})
+                                           "action": "action", "upload_log_id": upload_log_id,
+                                           "forget_card": False})
                         else:
                             raise Exception("error in line:%d,employee with code:%s not found" % (line_number, code))
                     line_number += 1
