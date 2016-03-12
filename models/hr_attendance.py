@@ -25,7 +25,7 @@ class Attendance(models.Model):
     early_minutes = fields.Float(compute="_compute_early_minutes", store=True)
     overtime_hours = fields.Float(compute="_compute_overtime_hours", store=True)
 
-    forget_card = fields.Boolean()
+    forget_card = fields.Boolean(default=True)
 
     @api.depends("name", "action")
     @api.multi
@@ -100,12 +100,29 @@ class Attendance(models.Model):
                 employees = records.mapped("employee_id")
                 for emp in employees:
                     emp_records = records.filtered(lambda r: r.employee_id == emp)
+                    emp_records.write({"action": "action"})
+
+                    emp_records = [r for r in emp_records.sorted(key=lambda r: r.name)]
                     if emp_records:
-                        emp_records.write({"action": "action"})
-                        emp_records = emp_records.sorted(key=lambda r: r.name)
-                        emp_records[0].action = "sign_in"
-                        if len(emp_records) > 1:
-                            emp_records[-1].action = "sign_out"
+                        emp_records_filtered = list()
+                        for rec in emp_records:
+                            if not emp_records_filtered:
+                                emp_records_filtered.append(rec)
+                            else:
+                                dt_date_latest_added = fields.Datetime.from_string(emp_records_filtered[-1].name)
+                                cur_date = fields.Datetime.from_string(rec.name)
+                                if (cur_date - dt_date_latest_added) > datetime.timedelta(minutes=5):
+                                    emp_records_filtered.append(rec)
+                        emp_records_filtered_recordset = reduce(lambda x, y: x + y, emp_records_filtered)
+                        if len(emp_records_filtered_recordset) == 1:
+                            dt_action_time = fields.Datetime.from_string(emp_records_filtered_recordset.name)
+                            if (dt_action_time + datetime.timedelta(hours=8)).hour < 12:
+                                emp_records_filtered_recordset[0].action = "sign_in"
+                            else:
+                                emp_records_filtered_recordset[0].action = "sign_out"
+                        if len(emp_records_filtered) > 1:
+                            emp_records_filtered_recordset[0].action = "sign_in"
+                            emp_records_filtered_recordset[-1].action = "sign_out"
             dt_date += datetime.timedelta(days=1)
         return True
 
