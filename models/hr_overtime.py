@@ -27,3 +27,10 @@ class Overtime(models.Model):
             #             dt_date_from = Datetime.from_string(overtime.date_from)
             #             dt_date_to = Datetime.from_string(overtime.date_to)
             #             overtime.duration = (dt_date_to - dt_date_from).seconds / 3600.0
+
+    @api.constrains("date_from", "date_to")
+    @api.multi
+    def _constrains_date(self):
+        self.ensure_one()
+        if self.duration <= 0:
+            raise ValidationError(_("duration must greater then 0"))

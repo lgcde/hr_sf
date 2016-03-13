@@ -83,7 +83,10 @@ class ReportAttendanceDetail(models.AbstractModel):
                 line["overtime_hours"] = round(overtime_hours, 2)
 
                 leaves = emp.get_holiday_on(dt_str)
-                line["holiday_total"] = sum(l.seconds / 3600.0 for l in leaves.values())
+                all_leaves = list()
+                for l in leaves.values():
+                    all_leaves.extend(l)
+                line["holiday_total"] = round(sum(l[2].seconds / 3600.0 for l in all_leaves),2)
                 line["summary"] = string.join(leaves.keys(), ",")
                 line["forget_card"] = emp.get_forget_card_on(dt_str)
 
