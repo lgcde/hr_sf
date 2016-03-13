@@ -87,7 +87,7 @@ class ReportAttendanceDetail(models.AbstractModel):
                 for l in leaves.values():
                     all_leaves.extend(l)
                 line["holiday_total"] = round(sum(l[2].seconds / 3600.0 for l in all_leaves),2)
-                line["summary"] = string.join(leaves.keys(), ",")
+                line["summary"] = string.join(leaves.keys(), ",\n")
                 line["forget_card"] = emp.get_forget_card_on(dt_str)
 
                 emp_attendances_values.append(line)

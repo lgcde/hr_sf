@@ -301,7 +301,7 @@ class Employee(models.Model):
         overtimes = Overtime.search([("date_from", ">=", date_from),
                                      ("date_to", "<=", date_to),
                                      ("employee_ids", "in", self.id),
-                                     ("state", "=", "confirmed")])
+                                     ("state", "=", "approved")])
 
         # TODO 这里还要检查有没有打卡记录
         return sum(o.duration for o in overtimes) if overtimes else 0

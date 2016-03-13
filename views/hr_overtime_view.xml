@@ -6,13 +6,18 @@
             <field name="model">hr_sf.overtime</field>
             <field name="arch" type="xml">
                 <form string="">
+                <header>
+                    <button string="Confirm" name="action_confirm" states="draft" type="object" class="oe_highlight"/>
+                    <button string="Approve" name="action_approve" states="confirmed" type="object"  class="oe_highlight"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved"/>
+                </header>
                     <sheet>
                         <group>
                             <field name="date_from"/>
                             <field name="date_to"/>
                             <field name="duration"/>
                             <field name="employee_ids"/>
-                            <field name="state"/>
+                            <!--<field name="state"/>-->
                         </group>
                     </sheet>
                 </form>
