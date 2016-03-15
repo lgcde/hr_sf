@@ -259,7 +259,6 @@ class Employee(models.Model):
                                         second=dt_cal_start.second)
 
                 return (dt1 - dt2).seconds / 60.0
-
                 # return attendance.late_minutes if attendance else None
 
     @api.multi

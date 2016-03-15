@@ -123,161 +123,218 @@
                                     <!--</div>-->
                                 </div>
                                 <br/>
-                                <div class="row">
-                                    <div class='col-md-2'>廠別代號：</div>
-                                    <div class='col-md-10'>
-                                        <ul class="nav nav-pills">
-                                            <t t-foreach="range(1,10)" t-as="loc">
-                                                <li role="presentation"
-                                                    t-att-class="'active' if str(loc) == location else ''">
-                                                    <a t-attf-href="/hr_sf/report/per_location?location={{str(loc)}}">
-                                                        <t t-esc="loc"/>
-                                                    </a>
-                                                </li>
-                                            </t>
-                                        </ul>
+                                <!--<div class="row">-->
+                                    <!--<div class='col-md-2'>廠別代號：</div>-->
+                                    <!--<div class='col-md-10'>-->
+                                        <!--<ul class="nav nav-pills">-->
+                                            <!--<t t-foreach="range(1,10)" t-as="loc">-->
+                                                <!--<li role="presentation"-->
+                                                    <!--t-att-class="'active' if str(loc) == location else ''">-->
+                                                    <!--<a t-attf-href="/hr_sf/report/per_location?location={{str(loc)}}">-->
+                                                        <!--<t t-esc="loc"/>-->
+                                                    <!--</a>-->
+                                                <!--</li>-->
+                                            <!--</t>-->
+                                        <!--</ul>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+
+                                <t t-foreach="emp_attendances.keys()" t-as="loc">
+                                    <div class="panel panel-default">
+                                        <!-- Default panel contents -->
+                                        <div class="panel-heading"><t t-esc="loc"/></div>
+                                        <div class="panel-body">
+                                            <p>打卡人数：<t t-esc="len(emp_attendances[loc])"/></p>
+                                            <button type="button" class="btn btn-primary">查看考勤明细</button>
+                                        </div>
+                                        <!-- Table -->
+                                        <table class="table" style="display:none">
+                                            <thead>
+                                                <tr>
+                                                    <th>部門名稱</th>
+                                                    <th>員工姓名</th>
+                                                    <th>狀態</th>
+                                                    <th>刷卡日期</th>
+                                                    <th>刷卡時間</th>
+                                                    <th>廠別代號</th>
+                                                    <th>请假</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="emp_attendances[loc]" t-as="emp_att">
+                                                    <tr t-att-class="'danger' if not emp_att['date'] else ''">
+                                                        <td>
+                                                            <span t-esc="emp_att['dep']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['name']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['state']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['date']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['time']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['location']"></span>
+                                                        </td>
+                                                        <td>
+                                                            <span t-esc="emp_att['leave']"></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
+                                </t>
 
-                                <table class="table table-striped table-condensed table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>部門名稱</th>
-                                            <th>員工姓名</th>
-                                            <th>狀態</th>
-                                            <th>刷卡日期</th>
-                                            <th>刷卡時間</th>
-                                            <th>廠別代號</th>
-                                            <th>请假</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="emp_attendances" t-as="emp_att">
-                                            <tr t-att-class="'danger' if not emp_att['date'] else ''">
-                                                <td>
-                                                    <span t-esc="emp_att['dep']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['name']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['state']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['date']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['time']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['location']"></span>
-                                                </td>
-                                                <td>
-                                                    <span t-esc="emp_att['leave']"></span>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </tbody>
+                                <!--<table class="table table-striped table-condensed table-hover">-->
+                                    <!--<thead>-->
+                                        <!--<tr>-->
+                                            <!--<th>部門名稱</th>-->
+                                            <!--<th>員工姓名</th>-->
+                                            <!--<th>狀態</th>-->
+                                            <!--<th>刷卡日期</th>-->
+                                            <!--<th>刷卡時間</th>-->
+                                            <!--<th>廠別代號</th>-->
+                                            <!--<th>请假</th>-->
+                                        <!--</tr>-->
+                                    <!--</thead>-->
+                                    <!--<tbody>-->
+                                        <!--<t t-foreach="emp_attendances" t-as="emp_att">-->
+                                            <!--<tr t-att-class="'danger' if not emp_att['date'] else ''">-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['dep']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['name']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['state']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['date']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['time']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['location']"></span>-->
+                                                <!--</td>-->
+                                                <!--<td>-->
+                                                    <!--<span t-esc="emp_att['leave']"></span>-->
+                                                <!--</td>-->
+                                            <!--</tr>-->
+                                        <!--</t>-->
+                                    <!--</tbody>-->
 
-                                </table>
-                                <hr style='margin:3px;'/>
-                                <div class='row'>
-                                    <table style=' border-collapse:collapse;'>
-                                        <tr style='background-color:#D8D8D8;'>
-                                            <td class='col-xs-1'>總計</td>
-                                            <td class='col-xs-2'>打卡人數：</td>
-                                            <td class='col-xs-1'>
-                                                <span>
-                                                    <t t-esc="action_count"/>人
-                                                </span>
-                                            </td>
-                                            <td class='col-xs-2'>未打卡人數：</td>
-                                            <td class='col-xs-1'>
-                                                <span>
-                                                    <t t-esc="un_action_count"/>人
-                                                </span>
-                                            </td>
-                                            <td class='col-xs-2'>請假人數：</td>
-                                            <td class='col-xs-1'><span/>人
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
+                                <!--</table>-->
+                                <!--<hr style='margin:3px;'/>-->
+                                <!--<div class='row'>-->
+                                    <!--<table style=' border-collapse:collapse;'>-->
+                                        <!--<tr style='background-color:#D8D8D8;'>-->
+                                            <!--<td class='col-xs-1'>總計</td>-->
+                                            <!--<td class='col-xs-2'>打卡人數：</td>-->
+                                            <!--<td class='col-xs-1'>-->
+                                                <!--<span>-->
+                                                    <!--<t t-esc="action_count"/>人-->
+                                                <!--</span>-->
+                                            <!--</td>-->
+                                            <!--<td class='col-xs-2'>未打卡人數：</td>-->
+                                            <!--<td class='col-xs-1'>-->
+                                                <!--<span>-->
+                                                    <!--<t t-esc="un_action_count"/>人-->
+                                                <!--</span>-->
+                                            <!--</td>-->
+                                            <!--<td class='col-xs-2'>請假人數：</td>-->
+                                            <!--<td class='col-xs-1'><span/>人-->
+                                            <!--</td>-->
+                                        <!--</tr>-->
+                                    <!--</table>-->
+                                <!--</div>-->
+
+
+
                             </div>
                         </div>
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingOne">
-                                    <h4 class="panel-title">
-                                        <a role="button" data-toggle="collapse" data-parent="#accordion"
-                                           href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            Collapsible Group Item #1
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"
-                                     aria-labelledby="headingOne">
-                                    <div class="panel-body">
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                                        richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor
-                                        brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                                        sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                                        shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
-                                        cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.
-                                        Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                                        you probably haven't heard of them accusamus labore sustainable VHS.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingTwo">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse"
-                                           data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
-                                           aria-controls="collapseTwo">
-                                            Collapsible Group Item #2
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
-                                     aria-labelledby="headingTwo">
-                                    <div class="panel-body">
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                                        richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor
-                                        brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                                        sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                                        shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
-                                        cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.
-                                        Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                                        you probably haven't heard of them accusamus labore sustainable VHS.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading" role="tab" id="headingThree">
-                                    <h4 class="panel-title">
-                                        <a class="collapsed" role="button" data-toggle="collapse"
-                                           data-parent="#accordion" href="#collapseThree" aria-expanded="false"
-                                           aria-controls="collapseThree">
-                                            Collapsible Group Item #3
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                     aria-labelledby="headingThree">
-                                    <div class="panel-body">
-                                        Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry
-                                        richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor
-                                        brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,
-                                        sunt aliqua put a bird on it squid single-origin coffee nulla assumenda
-                                        shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson
-                                        cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.
-                                        Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt
-                                        you probably haven't heard of them accusamus labore sustainable VHS.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <!---->
+                        <!--<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">-->
+                            <!--<div class="panel panel-default">-->
+                                <!--<div class="panel-heading" role="tab" id="headingOne">-->
+                                    <!--<h4 class="panel-title">-->
+                                        <!--<a role="button" data-toggle="collapse" data-parent="#accordion"-->
+                                           <!--href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">-->
+                                            <!--Collapsible Group Item #1-->
+                                        <!--</a>-->
+                                    <!--</h4>-->
+                                <!--</div>-->
+                                <!--<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel"-->
+                                     <!--aria-labelledby="headingOne">-->
+                                    <!--<div class="panel-body">-->
+                                        <!--Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry-->
+                                        <!--richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor-->
+                                        <!--brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,-->
+                                        <!--sunt aliqua put a bird on it squid single-origin coffee nulla assumenda-->
+                                        <!--shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson-->
+                                        <!--cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.-->
+                                        <!--Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt-->
+                                        <!--you probably haven't heard of them accusamus labore sustainable VHS.-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="panel panel-default">-->
+                                <!--<div class="panel-heading" role="tab" id="headingTwo">-->
+                                    <!--<h4 class="panel-title">-->
+                                        <!--<a class="collapsed" role="button" data-toggle="collapse"-->
+                                           <!--data-parent="#accordion" href="#collapseTwo" aria-expanded="false"-->
+                                           <!--aria-controls="collapseTwo">-->
+                                            <!--Collapsible Group Item #2-->
+                                        <!--</a>-->
+                                    <!--</h4>-->
+                                <!--</div>-->
+                                <!--<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"-->
+                                     <!--aria-labelledby="headingTwo">-->
+                                    <!--<div class="panel-body">-->
+                                        <!--Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry-->
+                                        <!--richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor-->
+                                        <!--brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,-->
+                                        <!--sunt aliqua put a bird on it squid single-origin coffee nulla assumenda-->
+                                        <!--shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson-->
+                                        <!--cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.-->
+                                        <!--Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt-->
+                                        <!--you probably haven't heard of them accusamus labore sustainable VHS.-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="panel panel-default">-->
+                                <!--<div class="panel-heading" role="tab" id="headingThree">-->
+                                    <!--<h4 class="panel-title">-->
+                                        <!--<a class="collapsed" role="button" data-toggle="collapse"-->
+                                           <!--data-parent="#accordion" href="#collapseThree" aria-expanded="false"-->
+                                           <!--aria-controls="collapseThree">-->
+                                            <!--Collapsible Group Item #3-->
+                                        <!--</a>-->
+                                    <!--</h4>-->
+                                <!--</div>-->
+                                <!--<div id="collapseThree" class="panel-collapse collapse" role="tabpanel"-->
+                                     <!--aria-labelledby="headingThree">-->
+                                    <!--<div class="panel-body">-->
+                                        <!--Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry-->
+                                        <!--richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor-->
+                                        <!--brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,-->
+                                        <!--sunt aliqua put a bird on it squid single-origin coffee nulla assumenda-->
+                                        <!--shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson-->
+                                        <!--cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo.-->
+                                        <!--Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt-->
+                                        <!--you probably haven't heard of them accusamus labore sustainable VHS.-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!---->
                     </div>
                 </body>
             </html>
