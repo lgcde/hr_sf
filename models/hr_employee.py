@@ -37,6 +37,62 @@ class Employee(models.Model):
     #     return records
 
     @api.multi
+    def get_absent_on(self, date=None):
+        self.ensure_one()
+        if not date:
+            return None
+
+        querying_day = date
+        if isinstance(date, datetime.date):
+            querying_day = Date.to_string(date)
+
+        absent_type_id = self.env.ref("hr_sf.absent_holidays_status").id
+
+        for holiday in self.holidays_ids:
+            if not holiday.date_from or not holiday.date_to:
+                continue
+            if holiday.holiday_status_id.id != absent_type_id:
+                continue
+
+            if not all((holiday.morning_start_work_time,
+                        holiday.morning_end_work_time,
+                        holiday.afternoon_start_work_time,
+                        holiday.afternoon_end_work_time)):
+                return None
+
+            dt_the_day_morning_start_work_time = datetime.datetime.strptime(
+                    "%s %s" % (querying_day, holiday.morning_start_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_morning_end_work_time = datetime.datetime.strptime(
+                    "%s %s" % (querying_day, holiday.morning_end_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_afternoon_start_work_time = datetime.datetime.strptime(
+                    "%s %s" % (querying_day, holiday.afternoon_start_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+            dt_the_day_afternoon_end_work_time = datetime.datetime.strptime(
+                    "%s %s" % (querying_day, holiday.afternoon_end_work_time), DEFAULT_SERVER_DATETIME_FORMAT)
+
+            dt_holiday_from = Datetime.from_string(holiday.date_from) + datetime.timedelta(hours=8)
+            dt_holiday_to = Datetime.from_string(holiday.date_to) + datetime.timedelta(hours=8)
+
+            # deal with morning first
+            dt_cal_start = max(dt_the_day_morning_start_work_time, dt_holiday_from)
+            dt_cal_start = min(dt_cal_start, dt_the_day_morning_end_work_time)
+
+            dt_cal_end = min(dt_the_day_morning_end_work_time, dt_holiday_to)
+            dt_cal_end = max(dt_cal_end, dt_the_day_morning_start_work_time)
+
+            if dt_cal_end > dt_cal_start:
+                return 1
+
+            # then deal with afternoon first
+            dt_cal_start = max(dt_the_day_afternoon_start_work_time, dt_holiday_from)
+            dt_cal_start = min(dt_cal_start, dt_the_day_afternoon_end_work_time)
+
+            dt_cal_end = min(dt_the_day_afternoon_end_work_time, dt_holiday_to)
+            dt_cal_end = max(dt_cal_end, dt_the_day_afternoon_start_work_time)
+
+            if dt_cal_end > dt_cal_start:
+                return 1
+
+    @api.multi
     def get_holiday_on(self, date=None):
         self.ensure_one()
         if not date:
@@ -48,8 +104,12 @@ class Employee(models.Model):
 
         leaves = defaultdict(lambda: list())  # [None, None, datetime.timedelta()] _time = datetime.timedelta()
 
+        absent_type_id = self.env.ref("hr_sf.absent_holidays_status").id
+
         for holiday in self.holidays_ids:
             if not holiday.date_from or not holiday.date_to:
+                continue
+            if holiday.holiday_status_id.id == absent_type_id:
                 continue
 
             if not all((holiday.morning_start_work_time,

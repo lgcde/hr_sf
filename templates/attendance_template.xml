@@ -75,6 +75,7 @@
                         <!--<script src="/hr_sf/static/src/bootstrap-datepicker-1.5.1-dist/js/bootstrap-datepicker.min.js"></script>-->
 
                         <!--<script src="/hr_sf/static/src/bootstrap-datepicker-1.5.1-dist/locales/bootstrap-datepicker.zh-CN.min.js"></script>-->
+                        <title>每日出缺勤状况表<t t-esc="date"/></title>
                     </head>
                 </head>
                 <body>
@@ -574,7 +575,6 @@
 
                                     </tr>
                                     <tr>
-
                                         <td>上班</td>
                                         <td>下班</td>
                                         <td>工時</td>
@@ -584,7 +584,7 @@
                                     </tr>
 
                                     <t t-foreach="emp_attendances" t-as="emp">
-                                        <tr>
+                                        <tr t-att-class="'info' if not emp.get('name',None) and not emp.get('emp_code',None) and emp.get('date',None) else ''">
                                             <td>1</td>
                                             <td>
                                                 <t t-esc="emp['emp_dep']"/>

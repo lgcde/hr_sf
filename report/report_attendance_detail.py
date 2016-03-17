@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 import datetime
 import string
-from openerp import models, api
+from openerp import models, api, _
 from openerp.fields import Date
 from openerp.tools.misc import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools.misc import DEFAULT_SERVER_DATE_FORMAT
@@ -88,9 +88,11 @@ class ReportAttendanceDetail(models.AbstractModel):
                 for l in leaves.values():
                     all_leaves.extend(l)
                 line["holiday_total"] = round(sum(l[2].seconds / 3600.0 for l in all_leaves),2)
-                line["summary"] = string.join(leaves.keys(), ",\n")
+                line["summary"] = string.join(leaves.keys(), ",")
                 line["forget_card"] = emp.get_forget_card_on(dt_str)
-
+                absent = emp.get_absent_on(dt_str)
+                if absent:
+                    line["summary"] += "," + _("absent")
                 emp_attendances_values.append(line)
                 emp_lines.append(line)
                 dt += datetime.timedelta(days=1)
