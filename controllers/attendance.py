@@ -2,6 +2,9 @@
 import csv
 import base64
 import datetime
+import itertools
+import string
+from collections import defaultdict
 
 from openerp.fields import Datetime
 from openerp.fields import Date
@@ -11,7 +14,7 @@ from openerp.http import request
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
-
+from openerp import _
 from ..tools.TimeZoneHelper import UTC_Datetime_To_TW_TZ
 
 
@@ -99,8 +102,9 @@ class HR_SF_Controller(Controller):
         if date:
             domain.append(("name", ">=", Datetime.to_string(dt_from)))
             domain.append(("name", "<=", Datetime.to_string(dt_to)))
-        if location:
-            domain.append(("location", "=", location))
+
+        # if location:
+        #     domain.append(("location", "=", location))
 
         all_employees = Employee.search([])
 
@@ -112,7 +116,7 @@ class HR_SF_Controller(Controller):
 
             records = Attendance.search(domain + [("employee_id", "=", emp.id)],
                                         order="name")
-            if records:
+            if records and records[-1].location:
                 latest_rec = records[-1]
                 attendance["state"] = "打卡"
 
@@ -129,18 +133,29 @@ class HR_SF_Controller(Controller):
                 attendance["location"] = None
 
             leave_time = emp.get_holiday_on(date)
-            attendance["leave"] = leave_time or None
+            attendance["leave"] = string.join(leave_time.keys(), ",") if leave_time else None
 
             emp_attendances_values.append(attendance)
+
+        # attendance_grouped_by_location = itertools.groupby(emp_attendances_values, key=lambda a: a["location"])
+        attendances = defaultdict(lambda: list())
+        for attendance in emp_attendances_values:
+            attendances[attendance["location"]].append(attendance)  # or _("not attended")
 
         print_time = UTC_Datetime_To_TW_TZ(Datetime.now())
         values["print_time"] = Datetime.to_string(print_time)
 
         values["date"] = date
         values["location"] = location
-        values["emp_attendances"] = emp_attendances_values
+        values["emp_attendances"] = attendances
+        keys = sorted(attendances.keys())
+        if None in keys:
+            keys.remove(None)
+            keys.append(None)
+        values["attendance_keys"] = keys
         values["action_count"] = len(filter(lambda a: a.get("date", None), emp_attendances_values))
         values["un_action_count"] = len(filter(lambda a: not a.get("date", None), emp_attendances_values))
+
         return request.render("hr_sf.attendance_per_location", values)
 
         # @route("/hr_sf/report/attendance_detail", auth="public", methods=["GET"])

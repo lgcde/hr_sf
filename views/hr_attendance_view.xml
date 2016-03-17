@@ -16,8 +16,8 @@
 
                 <group position="inside">
                     <field name="forget_card" groups="base.group_no_one"/>
-                    <field name="late_minutes" groups="base.group_no_one"/>
-                    <field name="early_minutes" groups="base.group_no_one"/>
+                    <!--<field name="late_minutes" groups="base.group_no_one"/>-->
+                    <!--<field name="early_minutes" groups="base.group_no_one"/>-->
                     <field name="overtime_hours" groups="base.group_no_one"/>
                     <field name="morning_start_work_time" groups="base.group_no_one"/>
                     <field name="morning_end_work_time" groups="base.group_no_one"/>

@@ -21,51 +21,51 @@ class Attendance(models.Model):
     afternoon_start_work_time = fields.Char(readonly=True)
     afternoon_end_work_time = fields.Char(readonly=True)
 
-    late_minutes = fields.Float(compute="_compute_late_minutes", store=True)
-    early_minutes = fields.Float(compute="_compute_early_minutes", store=True)
+    # late_minutes = fields.Float(compute="_compute_late_minutes", store=True)
+    # early_minutes = fields.Float(compute="_compute_early_minutes", store=True)
     overtime_hours = fields.Float(compute="_compute_overtime_hours", store=True)
 
     forget_card = fields.Boolean(default=True)
 
-    @api.depends("name", "action")
-    @api.multi
-    def _compute_late_minutes(self):
-        for attendance in self:
-            if attendance.action == "sign_in" and attendance.morning_start_work_time:
-                dt_action_time = UTC_Datetime_To_TW_TZ(attendance.name).time()
-                dt_start_work_time = datetime.datetime.strptime(attendance.morning_start_work_time,
-                                                                DEFAULT_SERVER_TIME_FORMAT).time()
-                if dt_action_time > dt_start_work_time:
-                    now = datetime.datetime.now()
-                    dt_action_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
-                                                       hour=dt_action_time.hour,
-                                                       minute=dt_action_time.minute,
-                                                       second=dt_action_time.second)
-                    dt_start_work_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
-                                                           hour=dt_start_work_time.hour,
-                                                           minute=dt_start_work_time.minute,
-                                                           second=dt_start_work_time.second)
-                    attendance.late_minutes = (dt_action_time - dt_start_work_time).seconds / 60.0
-
-    @api.depends("name", "action")
-    @api.multi
-    def _compute_early_minutes(self):
-        for attendance in self:
-            if attendance.action == "sign_out" and attendance.afternoon_end_work_time:
-                dt_action_time = UTC_Datetime_To_TW_TZ(attendance.name).time()
-                dt_end_work_time = datetime.datetime.strptime(attendance.afternoon_end_work_time,
-                                                              DEFAULT_SERVER_TIME_FORMAT).time()
-                if dt_action_time < dt_end_work_time:
-                    now = datetime.datetime.now()
-                    dt_action_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
-                                                       hour=dt_action_time.hour,
-                                                       minute=dt_action_time.minute,
-                                                       second=dt_action_time.second)
-                    dt_end_work_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
-                                                         hour=dt_end_work_time.hour,
-                                                         minute=dt_end_work_time.minute,
-                                                         second=dt_end_work_time.second)
-                    attendance.early_minutes = (dt_end_work_time - dt_action_time).seconds / 60.0
+    # @api.depends("name", "action")
+    # @api.multi
+    # def _compute_late_minutes(self):
+    #     for attendance in self:
+    #         if attendance.action == "sign_in" and attendance.morning_start_work_time:
+    #             dt_action_time = UTC_Datetime_To_TW_TZ(attendance.name).time()
+    #             dt_start_work_time = datetime.datetime.strptime(attendance.morning_start_work_time,
+    #                                                             DEFAULT_SERVER_TIME_FORMAT).time()
+    #             if dt_action_time > dt_start_work_time:
+    #                 now = datetime.datetime.now()
+    #                 dt_action_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
+    #                                                    hour=dt_action_time.hour,
+    #                                                    minute=dt_action_time.minute,
+    #                                                    second=dt_action_time.second)
+    #                 dt_start_work_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
+    #                                                        hour=dt_start_work_time.hour,
+    #                                                        minute=dt_start_work_time.minute,
+    #                                                        second=dt_start_work_time.second)
+    #                 attendance.late_minutes = (dt_action_time - dt_start_work_time).seconds / 60.0
+    #
+    # @api.depends("name", "action")
+    # @api.multi
+    # def _compute_early_minutes(self):
+    #     for attendance in self:
+    #         if attendance.action == "sign_out" and attendance.afternoon_end_work_time:
+    #             dt_action_time = UTC_Datetime_To_TW_TZ(attendance.name).time()
+    #             dt_end_work_time = datetime.datetime.strptime(attendance.afternoon_end_work_time,
+    #                                                           DEFAULT_SERVER_TIME_FORMAT).time()
+    #             if dt_action_time < dt_end_work_time:
+    #                 now = datetime.datetime.now()
+    #                 dt_action_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
+    #                                                    hour=dt_action_time.hour,
+    #                                                    minute=dt_action_time.minute,
+    #                                                    second=dt_action_time.second)
+    #                 dt_end_work_time = datetime.datetime(year=now.year, month=now.month, day=now.day,
+    #                                                      hour=dt_end_work_time.hour,
+    #                                                      minute=dt_end_work_time.minute,
+    #                                                      second=dt_end_work_time.second)
+    #                 attendance.early_minutes = (dt_end_work_time - dt_action_time).seconds / 60.0
 
     @api.multi
     def _altern_si_so(self):

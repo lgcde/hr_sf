@@ -1,7 +1,7 @@
 # _*_ coding: utf-8 _*_
 import datetime
 import string
-from openerp import models, api
+from openerp import models, api, _
 from openerp.fields import Date
 from openerp.tools.misc import DEFAULT_SERVER_TIME_FORMAT
 from openerp.tools.misc import DEFAULT_SERVER_DATE_FORMAT
@@ -49,6 +49,7 @@ class ReportAttendanceDetail(models.AbstractModel):
 
         for emp in all_employees:
             dt = date_from
+            emp_lines = list()
             while dt <= date_to:
                 dt_str = Date.to_string(dt)
 
@@ -61,7 +62,7 @@ class ReportAttendanceDetail(models.AbstractModel):
                 line['name'] = emp.name
                 line['emp_dep'] = emp.department_id.name
                 line['emp_code'] = emp.internal_code
-                line['date'] = dt.strftime(DEFAULT_SERVER_DATE_FORMAT + " %A")  # Date.to_string(dt)
+                line['date'] = dt.strftime(DEFAULT_SERVER_DATE_FORMAT)  # + " %A" Date.to_string(dt)
 
                 start_work_time = emp.get_start_work_time_on(dt_str)
                 line["start_work_time"] = start_work_time.strftime(DEFAULT_SERVER_TIME_FORMAT) \
@@ -83,13 +84,38 @@ class ReportAttendanceDetail(models.AbstractModel):
                 line["overtime_hours"] = round(overtime_hours, 2)
 
                 leaves = emp.get_holiday_on(dt_str)
-                line["holiday_total"] = sum(l.seconds / 3600.0 for l in leaves.values())
-                line["summary"] = string.join(leaves.keys(), ",")
+                all_leaves = list()
+                for l in leaves.values():
+                    all_leaves.extend(l)
+                line["holiday_total"] = round(sum(l[2].seconds / 3600.0 for l in all_leaves),2)
+
+                absent_for_summary = []
+                absent = emp.get_absent_on(dt_str)
+                if absent:
+                    absent_for_summary.append(_("absent"))
+                line["summary"] = string.join(leaves.keys() + absent_for_summary, ",")
                 line["forget_card"] = emp.get_forget_card_on(dt_str)
 
                 emp_attendances_values.append(line)
+                emp_lines.append(line)
                 dt += datetime.timedelta(days=1)
+            emp_total_line = dict()
+            emp_total_line["name"] = None
+            emp_total_line['emp_dep'] = None
+            emp_total_line['emp_code'] = None
+            emp_total_line['date'] = '小计'
+            emp_total_line['end_work_time'] = None
+            emp_total_line['start_work_time'] = None
+            emp_total_line['late_minutes'] = sum(l["late_minutes"] or 0 for l in emp_lines)
+            emp_total_line['early_minutes'] = sum(l["early_minutes"] or 0 for l in emp_lines)
+            emp_total_line["work_duration"] = sum(l["work_duration"] or 0 for l in emp_lines)
+            emp_total_line["late_minutes"] = sum(l["late_minutes"] or 0 for l in emp_lines)
 
+            emp_total_line["overtime_hours"] = sum(l["overtime_hours"] or 0 for l in emp_lines)
+            emp_total_line["holiday_total"] = sum(l["holiday_total"] or 0 for l in emp_lines)
+            emp_total_line["summary"] = string.join(l["summary"] for l in emp_lines)
+            emp_total_line["forget_card"] = sum(l["forget_card"] or 0 for l in emp_lines)
+            emp_attendances_values.append(emp_total_line)
         CAL_END_TIME = datetime.datetime.now()
         print "结束时间:", CAL_END_TIME
         print "耗时:", CAL_END_TIME - CAL_START_TIME
