@@ -88,11 +88,14 @@ class ReportAttendanceDetail(models.AbstractModel):
                 for l in leaves.values():
                     all_leaves.extend(l)
                 line["holiday_total"] = round(sum(l[2].seconds / 3600.0 for l in all_leaves),2)
-                line["summary"] = string.join(leaves.keys(), ",")
-                line["forget_card"] = emp.get_forget_card_on(dt_str)
+
+                absent_for_summary = []
                 absent = emp.get_absent_on(dt_str)
                 if absent:
-                    line["summary"] += "," + _("absent")
+                    absent_for_summary.append(_("absent"))
+                line["summary"] = string.join(leaves.keys() + absent_for_summary, ",")
+                line["forget_card"] = emp.get_forget_card_on(dt_str)
+
                 emp_attendances_values.append(line)
                 emp_lines.append(line)
                 dt += datetime.timedelta(days=1)
