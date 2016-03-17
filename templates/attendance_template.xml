@@ -138,17 +138,22 @@
                                         <!--</ul>-->
                                     <!--</div>-->
                                 <!--</div>-->
-
-                                <t t-foreach="emp_attendances.keys()" t-as="loc">
+                                <script>
+                                    function toggle_table(table)
+                                    {
+                                        $("#"+table).toggle();
+                                    }
+                                </script>
+                                <t t-foreach="attendance_keys" t-as="loc">
                                     <div class="panel panel-default">
                                         <!-- Default panel contents -->
-                                        <div class="panel-heading"><t t-esc="loc"/></div>
+                                        <div class="panel-heading"><t t-esc="loc or '未考勤'"/></div>
                                         <div class="panel-body">
-                                            <p>打卡人数：<t t-esc="len(emp_attendances[loc])"/></p>
-                                            <button type="button" class="btn btn-primary">查看考勤明细</button>
+                                            <p>人数：<t t-esc="len(emp_attendances[loc])"/></p>
+                                            <button type="button" class="btn btn-primary" t-attf-onclick="toggle_table('loc_{{loc if loc is not None else 'None' }}')">考勤明细</button>
                                         </div>
                                         <!-- Table -->
-                                        <table class="table" style="display:none">
+                                        <table t-attf-id="loc_{{loc if loc is not None else 'None' }}" class="table" style="display:none">
                                             <thead>
                                                 <tr>
                                                     <th>部門名稱</th>
@@ -162,7 +167,7 @@
                                             </thead>
                                             <tbody>
                                                 <t t-foreach="emp_attendances[loc]" t-as="emp_att">
-                                                    <tr t-att-class="'danger' if not emp_att['date'] else ''">
+                                                    <tr t-att-class="'danger' if not emp_att.get('date',None) else ''">
                                                         <td>
                                                             <span t-esc="emp_att['dep']"></span>
                                                         </td>

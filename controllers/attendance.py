@@ -140,7 +140,7 @@ class HR_SF_Controller(Controller):
         # attendance_grouped_by_location = itertools.groupby(emp_attendances_values, key=lambda a: a["location"])
         attendances = defaultdict(lambda: list())
         for attendance in emp_attendances_values:
-            attendances[attendance["location"] or _("not attended")].append(attendance)
+            attendances[attendance["location"]].append(attendance)  # or _("not attended")
 
         print_time = UTC_Datetime_To_TW_TZ(Datetime.now())
         values["print_time"] = Datetime.to_string(print_time)
@@ -148,6 +148,11 @@ class HR_SF_Controller(Controller):
         values["date"] = date
         values["location"] = location
         values["emp_attendances"] = attendances
+        keys = sorted(attendances.keys())
+        if None in keys:
+            keys.remove(None)
+            keys.append(None)
+        values["attendance_keys"] = keys
         values["action_count"] = len(filter(lambda a: a.get("date", None), emp_attendances_values))
         values["un_action_count"] = len(filter(lambda a: not a.get("date", None), emp_attendances_values))
 
