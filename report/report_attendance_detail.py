@@ -93,7 +93,7 @@ class ReportAttendanceDetail(models.AbstractModel):
                 absent = emp.get_absent_on(dt_str)
                 if absent:
                     absent_for_summary.append(_("absent"))
-                line["summary"] = string.join(leaves.keys() + absent_for_summary, ",")
+                line["summary"] = string.join(set(leaves.keys() + absent_for_summary), ",")
                 line["forget_card"] = emp.get_forget_card_on(dt_str)
 
                 emp_attendances_values.append(line)
@@ -113,7 +113,7 @@ class ReportAttendanceDetail(models.AbstractModel):
 
             emp_total_line["overtime_hours"] = sum(l["overtime_hours"] or 0 for l in emp_lines)
             emp_total_line["holiday_total"] = sum(l["holiday_total"] or 0 for l in emp_lines)
-            emp_total_line["summary"] = string.join(l["summary"] for l in emp_lines)
+            emp_total_line["summary"] = string.join(set(l["summary"] for l in emp_lines))
             emp_total_line["forget_card"] = sum(l["forget_card"] or 0 for l in emp_lines)
             emp_attendances_values.append(emp_total_line)
         CAL_END_TIME = datetime.datetime.now()
