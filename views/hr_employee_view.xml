@@ -22,15 +22,28 @@
             </field>
         </record>
 
+        <record id="view_employee_tree" model="ir.ui.view">
+            <field name="name">hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="internal_code"/>
+                </field>
+            </field>
+        </record>
+
         <record id="view_employee_filter" model="ir.ui.view">
             <field name="name">view_employee_filter</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_filter"/>
             <field name="arch" type="xml">
-
-                <xpath expr="//search" position="inside">
+                <field name="name" position="before">
                     <field name="internal_code"/>
-                </xpath>
+                </field>
+              <!--  <xpath expr="//search" position="inside">
+                    <field name="internal_code"/>
+                </xpath>-->
 
             </field>
         </record>
