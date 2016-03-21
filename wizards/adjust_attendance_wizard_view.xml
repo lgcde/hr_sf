@@ -25,6 +25,6 @@
                     res_model="hr_sf.adjust_attendance_wizard" view_mode="form" target="new" multi="False"/>
 
         <menuitem id="menu_adjust_attendance" name="Adjust Attendance" parent="hr_attendance.menu_hr_attendance"
-                  action="adjust_attendance_wizard_action" sequence="10"/>
+                  action="adjust_attendance_wizard_action" sequence="100"/>
     </data>
 </openerp>
