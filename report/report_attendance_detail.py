@@ -99,23 +99,26 @@ class ReportAttendanceDetail(models.AbstractModel):
                 emp_attendances_values.append(line)
                 emp_lines.append(line)
                 dt += datetime.timedelta(days=1)
-            emp_total_line = dict()
-            emp_total_line["name"] = None
-            emp_total_line['emp_dep'] = None
-            emp_total_line['emp_code'] = None
-            emp_total_line['date'] = '小计'
-            emp_total_line['end_work_time'] = None
-            emp_total_line['start_work_time'] = None
-            emp_total_line['late_minutes'] = sum(l["late_minutes"] or 0 for l in emp_lines)
-            emp_total_line['early_minutes'] = sum(l["early_minutes"] or 0 for l in emp_lines)
-            emp_total_line["work_duration"] = sum(l["work_duration"] or 0 for l in emp_lines)
-            emp_total_line["late_minutes"] = sum(l["late_minutes"] or 0 for l in emp_lines)
 
-            emp_total_line["overtime_hours"] = sum(l["overtime_hours"] or 0 for l in emp_lines)
-            emp_total_line["holiday_total"] = sum(l["holiday_total"] or 0 for l in emp_lines)
-            emp_total_line["summary"] = string.join(set(l["summary"] for l in emp_lines))
-            emp_total_line["forget_card"] = sum(l["forget_card"] or 0 for l in emp_lines)
-            emp_attendances_values.append(emp_total_line)
+            if emp_lines:
+                emp_total_line = dict()
+                emp_total_line["name"] = None
+                emp_total_line['emp_dep'] = None
+                emp_total_line['emp_code'] = None
+                emp_total_line['date'] = '小计'
+                emp_total_line['end_work_time'] = None
+                emp_total_line['start_work_time'] = None
+                emp_total_line['late_minutes'] = sum(l["late_minutes"] or 0 for l in emp_lines)
+                emp_total_line['early_minutes'] = sum(l["early_minutes"] or 0 for l in emp_lines)
+                emp_total_line["work_duration"] = sum(l["work_duration"] or 0 for l in emp_lines)
+                emp_total_line["late_minutes"] = sum(l["late_minutes"] or 0 for l in emp_lines)
+
+                emp_total_line["overtime_hours"] = sum(l["overtime_hours"] or 0 for l in emp_lines)
+                emp_total_line["holiday_total"] = sum(l["holiday_total"] or 0 for l in emp_lines)
+                emp_total_line["summary"] = string.join(set(l["summary"] for l in emp_lines))
+                emp_total_line["forget_card"] = sum(l["forget_card"] or 0 for l in emp_lines)
+                emp_attendances_values.append(emp_total_line)
+
         CAL_END_TIME = datetime.datetime.now()
         print "结束时间:", CAL_END_TIME
         print "耗时:", CAL_END_TIME - CAL_START_TIME

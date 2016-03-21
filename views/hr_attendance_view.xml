@@ -38,9 +38,9 @@
             </field>
         </record>
 
-        <record id="url_action_attendance_detail" model="ir.actions.act_url">
-            <field name="name">action_attendance_detail</field>
-            <field name="url">/hr_sf/report/attendance_detail</field>
+        <record id="url_action_attendance_manual_upload" model="ir.actions.act_url">
+            <field name="name">Manual Upload</field>
+            <field name="url">/hr_sf/attendance</field>
             <field name="target">new</field>
         </record>
 
@@ -50,11 +50,11 @@
             <field name="target">new</field>
         </record>
 
-        <!-- This Menu Item Must have a parent -->
         <menuitem id="attendance_report_cate" name="Reports" parent="hr_attendance.menu_hr_attendance" sequence="110"/>
 
-        <!-- This Menu Item must have a parent and an action -->
         <menuitem id="attendance_report_per_location" name="Attendance Daily" parent="attendance_report_cate" action="url_action_attendance_per_location" sequence="1"/>
+
+        <menuitem id="attendance_manual_upload_menu" name="Manual Upload" parent="hr_attendance.menu_hr_attendance" action="url_action_attendance_manual_upload" sequence="90"/>
 
     </data>
 </openerp>
